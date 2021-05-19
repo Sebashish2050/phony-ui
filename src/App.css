@@ -1,0 +1,21 @@
+.row {
+    margin: 1.2rem 0 !important;
+    font-size:1.5rem;
+    color: #136dfa;
+}
+
+.form-control {
+    padding: 1rem 0.5rem !important;
+    color: #136dfa !important;
+    border: 1px solid #136dfa !important;
+    font-size: 2rem !important;
+}
+
+.stopWatch {
+    font-size: 5rem;
+    color: #136dfa;
+}
+
+.dropdown-toggle {
+    background-color: #136dfa !important;
+}
