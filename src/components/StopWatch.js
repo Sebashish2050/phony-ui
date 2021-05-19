@@ -7,7 +7,7 @@ function StopWatch({ seconds, minutes, hours }) {
       seconds={seconds}
       minutes={minutes}
       hours={hours}
-      onCallback={() => console.log("Finish")}
+      onCallback={() => ({})}
       render={({ formatted }) => {
         return (
           <div>

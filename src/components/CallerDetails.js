@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Col,
   Row,
@@ -15,6 +15,8 @@ import {
   DropdownItem
 } from "reactstrap";
 
+import { validateCallDetails, makeApiCall } from '../utils';
+
 function CallerDetails({ wsCallDetails }) {
   const INITIAL_STATE = {
     callerName: "",
@@ -28,42 +30,16 @@ function CallerDetails({ wsCallDetails }) {
 
   const toggle = () => setDropdownOpen(prevState => !prevState);
 
-  const validateCallDetails = () => {
-    const patt = new RegExp(/^\+[1-9]{1}[0-9]{3,14}$/);
-    if (!callDetails.callerName || !callDetails.calleeName) {
-      return "Empty data. Kindly enter name";
-    }
-    if (!callDetails.callerNumber || !callDetails.calleeNumber) {
-      return "Empty phone number. Kindly enter phone numbers";
-    } else if (
-      !patt.test(callDetails.callerNumber) ||
-      !patt.test(callDetails.calleeNumber)
-    ) {
-      return "Invalid phone number format. Kindly enter correct format (Example: +918000800080)";
-    }
-    return "";
-  };
-
-  const handleCall = () => {
-    const invalidMsg = validateCallDetails();
+  const handleCall = async () => {
+    const invalidMsg = validateCallDetails(callDetails);
     if (!invalidMsg) {
-      fetch("api/v1/call", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(callDetails),
-      })
-        .then((response) => response.json())
-        .then((data) => console.log({ data }));
-      console.log("hii");
+      await makeApiCall(callDetails);
     } else {
       alert(invalidMsg);
     }
   };
 
   const handleChange = (e) => {
-    console.log("xxx", e.currentTarget.name, e.currentTarget.value);
     const updatedValue = {
       ...callDetails,
       [e.currentTarget.name]: e.currentTarget.value,
@@ -71,6 +47,14 @@ function CallerDetails({ wsCallDetails }) {
     setCallDetails(updatedValue);
   };
 
+  useEffect(() => {
+    if(wsCallDetails.callStatus &&
+      (wsCallDetails.callStatus.toLowerCase() === 'completed' || wsCallDetails.callStatus.toLowerCase() === 'busy')
+    ){
+      setCallDetails(INITIAL_STATE);
+    }
+  }, [wsCallDetails.callStatus])
+  
   return (
     <Container>
       <Form>
@@ -132,6 +116,16 @@ function CallerDetails({ wsCallDetails }) {
           </Col>
         </Row>
         <Row>
+          <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+            <DropdownToggle caret>Duration</DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem>5 min</DropdownItem>
+              <DropdownItem>10 min</DropdownItem>
+              <DropdownItem>15 min</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </Row>
+        <Row>
           {wsCallDetails.callStatus === "in-queued" ? (
             <Button variant="primary" disabled>
               <Spinner
@@ -152,15 +146,6 @@ function CallerDetails({ wsCallDetails }) {
           )}
         </Row>
       </Form>
-
-      <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-        <DropdownToggle caret>Duration</DropdownToggle>
-        <DropdownMenu>
-          <DropdownItem>5 min</DropdownItem>
-          <DropdownItem>10 min</DropdownItem>
-          <DropdownItem>15 min</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
     </Container>
   );
 }
