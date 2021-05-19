@@ -23,6 +23,7 @@ function CallerDetails({ wsCallDetails }) {
     callerNumber: "",
     calleeName: "",
     calleeNumber: "",
+    timeLimit: 5,
   };
 
   const [callDetails, setCallDetails] = React.useState(INITIAL_STATE);
@@ -116,14 +117,14 @@ function CallerDetails({ wsCallDetails }) {
           </Col>
         </Row>
         <Row>
-          <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-            <DropdownToggle caret>Duration</DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem>5 min</DropdownItem>
-              <DropdownItem>10 min</DropdownItem>
-              <DropdownItem>15 min</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          <FormGroup>
+            <Label for="timeLimit">Select time interval (in Minutes)</Label>
+            <Input type="select" name="timeLimit" id="timeLimit" value={callDetails.timeLimit} onChange={handleChange}>
+              <option>5</option>
+              <option>10</option>
+              <option>15</option>
+            </Input>
+          </FormGroup>
         </Row>
         <Row>
           {wsCallDetails.callStatus === "in-queued" ? (
