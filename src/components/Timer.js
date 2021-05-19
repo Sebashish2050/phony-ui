@@ -18,7 +18,7 @@ const Timer = (props) => {
       ) : (
         <>
           <Row>
-            <Col md={4}>Start Time</Col>
+            <Col md={4}>Answer Time</Col>
             <Col md={8}>{callDetails.startTime}</Col>
           </Row>
           <Row>
